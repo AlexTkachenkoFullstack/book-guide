@@ -82,7 +82,7 @@ if (localStorage.getItem('shoppingList')) {
 
     if (shoppingList.length === 0) {
       newShoppingListContainer.replaceWith(shoppingListContainer);
-      paginationContainer.classList.add('pagination-hidden');
+      // paginationContainer.classList.add('pagination-hidden');
     }
   }
 

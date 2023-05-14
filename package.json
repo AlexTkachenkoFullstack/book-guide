@@ -2,10 +2,10 @@
   "name": "bookshelf",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://AlexTkachenkoFullstack.github.io/book-guide",
+  "homepage": "https://AlexTkachenkoFullstack.github.io/bookshelf",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /book-guide/"
+    "build": "parcel build src/*.html --public-url /bookshelf/"
   },
   "repository": {
     "type": "git",
