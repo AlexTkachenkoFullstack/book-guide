@@ -1,7 +1,10 @@
 import Notiflix from "notiflix";
-
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {auth,db} from '../firebase/confige.js'
+import { ref, set, onValue } from "firebase/database";
+import {  signOut } from "firebase/auth";
 // modal
-
+ 
 (() => {
     const refs = {
       closeModalBtn: document.querySelector('[data-modal-close-sign]'),
@@ -29,7 +32,7 @@ import Notiflix from "notiflix";
     refs.closeModalBtn.addEventListener('click', toggleModal);
     refs.openModalBtnMob.addEventListener('click', toggleModal);
     refs.closeModalBtn.addEventListener('click', toggleModal);
-    function toggleModal() {
+        function toggleModal() {
         refs.modal.classList.toggle('is-hidden');
         refs.mobileMenu.classList.remove('is-open');
         refs.mobileMenuBtn.classList.remove('is-open');
@@ -37,11 +40,64 @@ import Notiflix from "notiflix";
         refs.wrapmodalsign.classList.toggle('is-hidden');
         // refs.closeModalBtn.classList.toggle('is-hidden'); //----
     };
-
+    
     refs.btnSign.addEventListener('click', (evt) => {
         evt.preventDefault()
-        Notiflix.Notify.success('We are glad you to welcome on our site!')
+        const name=document.querySelector('.name').value;
+        const email=document.querySelector('.email').value;
+        const password=document.querySelector('.pass').value;
+        if(refs.btnSign.textContent==='Sign up'){
+          createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => { 
+            const user = userCredential.user;
+            if(user){
+            const db_ref = ref(db, 'users/' + user.uid);
+            const user_data = {
+                email,
+                name
+            };
+            set(db_ref, user_data)
+              getUserInfo(user.uid)
+              Notiflix.Notify.success('We are glad you to welcome on our site!');
+              location.reload()
+            }
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            if(errorCode==='auth/invalid-email'){
+              Notiflix.Notify.failure('Enter a valid email');
+            }
+            if(errorCode==='auth/weak-password'){
+              Notiflix.Notify.failure('The password must be at least 6 characters');
+            }
+          });
+        }
+        if(refs.btnSign.textContent==='sign in'){
+          signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => { 
+            const user = userCredential.user;
+            if(user){
+              const a=getUserInfo(user.uid)
+              setTimeout(()=>{
+                const currentOrigin = window.location.origin;
+                const finalUrl = currentOrigin + '/index.html';
+                window.location.href = finalUrl;
+              }, 1000)
+            }
+            Notiflix.Notify.success('Welcome on our site!');
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            if(errorCode==='auth/invalid-email'){
+              Notiflix.Notify.failure('Enter a valid email');
+            }
+            if(errorCode==='auth/weak-password'){
+              Notiflix.Notify.failure('The password must be at least 6 characters');
+            }
+          });
+        }    
     });
+
 
     refs.signIn.addEventListener('click', (evt) => {
         evt.preventDefault()
@@ -137,3 +193,50 @@ if (acum === '') {
 // function keypress(e) {
 //     console.dir(e.key)
 // }
+
+
+
+
+function getUserInfo(userId){
+  const dbRef =ref(db, `users/${userId}`);
+    onValue(dbRef, (snapshot) => {
+      const userData = snapshot.val();
+      const userInfo={email:userData.email, name:userData.name}
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      if(userData.userBooks && userData.userBooks.length>0){
+        localStorage.setItem('shoppingList', JSON.stringify(userData.userBooks))
+      }
+                 
+    });
+}
+
+
+export async function logoutAndSaveData() {
+  try {
+    // Получаем текущего пользователя
+    const user = auth.currentUser;
+
+    // Проверяем, есть ли пользователь
+    if (user) {
+      // Сохраняем данные перед выходом (замените эту часть кода на вашу логику сохранения данных)
+      const userInfo=JSON.parse(localStorage.getItem('userInfo'))
+      const userBooks=JSON.parse(localStorage.getItem('shoppingList'))
+      const userData = {
+        userBooks,
+        ...userInfo
+      };
+      await set(ref(db, `users/${user.uid}`), userData);
+
+      // Выполняем выход
+      await signOut(auth);
+  
+      // Дополнительные действия после успешного выхода
+      return 'ok'
+    } else {
+      console.log('No user is currently signed in.');
+      return 'error'
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+  }
+}
