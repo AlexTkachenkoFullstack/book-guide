@@ -24,6 +24,8 @@ import {  signOut } from "firebase/auth";
       
       signIn: document.querySelector('.sign-in'),
         name: document.querySelector('.name'),
+
+      signUpForm:document.querySelector('.form_sign'),
       
       backdropEl: document.querySelector('.bacckdrop-sign'),
     };
@@ -38,7 +40,6 @@ import {  signOut } from "firebase/auth";
         refs.mobileMenuBtn.classList.remove('is-open');
         refs.body.classList.remove('mobile-menu-open');
         refs.wrapmodalsign.classList.toggle('is-hidden');
-        // refs.closeModalBtn.classList.toggle('is-hidden'); //----
     };
     
     refs.btnSign.addEventListener('click', (evt) => {
@@ -66,11 +67,18 @@ import {  signOut } from "firebase/auth";
           })
           .catch((error) => {
             const errorCode = error.code;
+            console.log(error.code)
             if(errorCode==='auth/invalid-email'){
               Notiflix.Notify.failure('Enter a valid email');
             }
             if(errorCode==='auth/weak-password'){
               Notiflix.Notify.failure('The password must be at least 6 characters');
+            }
+            if(errorCode==='auth/email-already-in-use'){
+              Notiflix.Notify.failure('User with this email is already in the database');
+            }
+            if(errorCode==='auth/missing-email'){
+              Notiflix.Notify.failure('Enter email. This field is required');
             }
           });
         }
@@ -95,6 +103,12 @@ import {  signOut } from "firebase/auth";
             }
             if(errorCode==='auth/weak-password'){
               Notiflix.Notify.failure('The password must be at least 6 characters');
+            }
+            if(error.code==='auth/user-not-found'){
+              Notiflix.Notify.failure('User with this email was not found');
+            }
+            if(error.code==='auth/wrong-password'){
+              Notiflix.Notify.failure('Wrong password');
             }
           });
         }    
@@ -126,31 +140,23 @@ import {  signOut } from "firebase/auth";
     })
 
 
-    // close
+    
     refs.backdropEl.addEventListener('click', closeModal);
  
-    // refs.modal.classList.add('is-hidden');
     function closeModal(event) {
         const clickOnBackdropEl = event.target
-        // console.log(clickOnBackdropEl)
-        if (
-          clickOnBackdropEl.hasAttribute('data-modal-sign')) {
+        if (clickOnBackdropEl.hasAttribute('data-modal-sign')) {
           refs.backdropEl.classList.add('is-hidden'); 
            refs.wrapmodalsign.classList.toggle('is-hidden');
         }
-        return
     }
-    document.addEventListener("keydown", event => {        
-      
+
+    document.addEventListener("keydown", event => {         
         if (event.key === 'Escape') {
             refs.backdropEl.classList.add('is-hidden')
-            refs.wrapmodalsign.classList.toggle('is-hidden');
-           
-        }
-    
+            refs.wrapmodalsign.classList.toggle('is-hidden');       
+        }  
     });
-    
-
 })();
 
 
@@ -183,18 +189,11 @@ window.onload = () => {
 
 let x = 0;
 const counter = document.querySelector('.countBtn');
-
 const acum = document.querySelector('.acum');
-
 acum.innerHTML = x;
-
-if (acum === '') {
+if (!acum ) {
     acum.classList.add("visibility");
 }
-// window.addEventListener('keydown', keypress)
-// function keypress(e) {
-//     console.dir(e.key)
-// }
 
 
 
