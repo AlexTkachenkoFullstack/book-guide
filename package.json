@@ -5,7 +5,8 @@
   "homepage": "https://AlexTkachenkoFullstack.github.io/bookshelf",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /bookshelf/"
+    "build": "parcel build src/*.html --public-url /bookshelf/",
+    "lint:js": "eslint your-js-files-directory"
   },
   "repository": {
     "type": "git",
