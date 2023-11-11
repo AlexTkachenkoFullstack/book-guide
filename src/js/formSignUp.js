@@ -59,7 +59,9 @@ import {  signOut } from "firebase/auth";
             set(db_ref, user_data)
               getUserInfo(user.uid)
               Notiflix.Notify.success('We are glad you to welcome on our site!');
-              location.reload()
+              const currentOrigin = window.location.origin;
+                const finalUrl = currentOrigin + '/bookshelf/index.html';
+                window.location.href = finalUrl;
             }
           })
           .catch((error) => {
@@ -80,7 +82,7 @@ import {  signOut } from "firebase/auth";
               const a=getUserInfo(user.uid)
               setTimeout(()=>{
                 const currentOrigin = window.location.origin;
-                const finalUrl = currentOrigin + '/index.html';
+                const finalUrl = currentOrigin + '/bookshelf/index.html';
                 window.location.href = finalUrl;
               }, 1000)
             }

@@ -85,7 +85,7 @@ async function logOutUser(e){
     localStorage.removeItem('userInfo')
     localStorage.removeItem('shoppingList')
     const currentOrigin = window.location.origin;
-    const finalUrl = currentOrigin + '/index.html';
+    const finalUrl = currentOrigin + '/bookshelf/index.html';
     window.location.href = finalUrl;
   }else{
     console.log('Some probleme with server')
