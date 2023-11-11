@@ -1,19 +1,16 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, signOut } from "firebase/auth";
-import { getDatabase, ref } from "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth} from "firebase/auth";
+import { getDatabase} from "firebase/database";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDIqDGOJm1yZ3R5a2lTGyxH37krVB3lxg4",
+    apiKey: process.env.API_KEY,
     authDomain: "books-a96dc.firebaseapp.com",
     databaseURL: "https://books-a96dc-default-rtdb.europe-west1.firebasedatabase.app/",
     projectId: "books-a96dc",
     storageBucket: "books-a96dc.appspot.com",
     messagingSenderId: "603072508530",
-    appId: "1:603072508530:web:74c296160f190475ed08eb"
+    appId: process.env.API_ID
 };
 
 // Initialize Firebase

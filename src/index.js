@@ -1,3 +1,4 @@
+require('dotenv').config();
 import './js/fetchApi';
 import './js/main';
 import './js/categories';
